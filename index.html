@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f6fde">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Rutero de viáticos</title>
+<style>
+:root{--bg:#eef2f7;--card:#fff;--tx:#14202e;--mu:#6b7a8d;--bd:#e1e7ef;--ac:#0f6fde;--ac2:#fff;--soft:#e8f1fd;--dg:#c0362c;--ok:#12805c;--sh:0 4px 18px rgba(20,40,80,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1318;--card:#181e26;--tx:#eaf0f7;--mu:#93a1b3;--bd:#27303b;--ac:#4a9bff;--ac2:#08111f;--soft:#1a2a40;--dg:#ff7b72;--ok:#4cd6a3;--sh:0 4px 18px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:640px;margin:0 auto;padding:14px 14px 90px}
+h1{font-size:20px;margin:0}
+h2{font-size:16px;margin:0}
+.hero{background:linear-gradient(135deg,#0f6fde,#12a4a0);color:#fff;border-radius:20px;padding:18px;box-shadow:var(--sh)}
+.hero p{margin:2px 0 0;opacity:.85;font-size:13px}
+.stats{display:grid;grid-template-columns:1.6fr 1fr;gap:10px;margin-top:14px}
+.stat{background:rgba(255,255,255,.16);border-radius:14px;padding:10px 12px}
+.stat small{display:block;opacity:.85;font-size:12px}
+.stat b{font-size:22px}
+.hero select{margin-top:12px;width:100%;background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:10px;padding:10px;font:inherit}
+.hero select option{color:#14202e}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-top:14px;box-shadow:var(--sh)}
+label{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--mu);margin:12px 0 5px}
+input,textarea{width:100%;padding:12px;border:1.5px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit}
+input:focus,textarea:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px var(--soft)}
+textarea{min-height:60px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;transition:transform .1s}
+button:active{transform:scale(.97)}
+.pri{background:var(--ac);color:var(--ac2);width:100%;margin-top:16px;font-weight:700;font-size:16px;padding:14px}
+.sec{background:var(--soft);color:var(--ac);font-weight:600;font-size:14px}
+.wide{width:100%;margin-top:10px}
+.ghost{background:rgba(255,255,255,.2);color:#fff;padding:6px 12px;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{background:var(--soft);color:var(--ac);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.btns{display:flex;gap:6px}
+.day{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 6px}
+.item{background:var(--bg);border-radius:14px;padding:12px;margin-bottom:8px}
+.item .r{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.item .v{color:var(--ok);white-space:nowrap}
+.meta{color:var(--mu);font-size:13px;margin-top:2px}
+.tag{display:inline-block;background:var(--soft);color:var(--ac);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin-right:4px}
+.acts{display:flex;justify-content:flex-end;gap:4px;margin-top:2px}
+.acts button{background:none;padding:4px 8px;font-size:13px;color:var(--ac)}
+.acts .del{color:var(--dg)}
+.empty{text-align:center;color:var(--mu);padding:26px 0}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,40px);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;max-width:90%}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+body{background:radial-gradient(1200px 500px at 50% -10%,var(--soft),transparent 70%),var(--bg);min-height:100vh}
+.authwrap{min-height:85vh;display:grid;place-items:center}
+.authcard{width:100%;max-width:400px;background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:28px 22px;box-shadow:var(--sh);text-align:center;animation:up .5s both}
+.authcard form{text-align:left}
+.logo{width:64px;height:64px;margin:0 auto 12px;border-radius:20px;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,#0f6fde,#12a4a0);box-shadow:0 8px 22px rgba(15,111,222,.35)}
+.authcard>.meta{margin:6px 0 18px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
+.tabs button{background:none;color:var(--mu);font-weight:600;padding:9px}
+.tabs button.on{background:var(--card);color:var(--ac);box-shadow:0 1px 6px rgba(20,40,80,.12)}
+.pw{position:relative}.pw input{padding-right:46px}
+.pw button{position:absolute;right:4px;top:4px;background:none;padding:8px 10px}
+.link{background:none;color:var(--ac);width:100%;margin-top:6px;font-size:14px;font-weight:600}
+button.load{opacity:.7;pointer-events:none}
+.me{display:flex;align-items:center;gap:10px;min-width:0}
+.me p{margin:0}
+.av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;font-weight:700;font-size:18px;flex:none}
+.hero{position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero>*{position:relative;z-index:1}
+.card{animation:up .45s both}
+.item{border-left:4px solid var(--ac);transition:transform .15s}
+.item:hover{transform:translateX(2px)}
+.day{display:flex;align-items:center;gap:8px}
+.day::after{content:"";flex:1;height:1px;background:var(--bd)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.sect{margin:18px 2px 10px}
+.aid{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:var(--sh);cursor:pointer;animation:up .4s both;transition:transform .12s}
+.aid:active{transform:scale(.985)}
+.aid .r{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-weight:700}
+.aid .v{color:var(--ac)}
+.code{font-size:18px}
+.big{font-size:26px;margin-top:10px}
+.prog{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0f6fde,#12a4a0);border-radius:99px;transition:width .4s}
+.prog.over i{background:var(--dg)}
+.prog.w{background:rgba(255,255,255,.25)}
+.neg{color:var(--dg)}.pos{color:var(--ok)}
+.hero .neg{color:#ffd6d1}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stats3 .stat{padding:9px 10px}
+.stats3 .stat b{font-size:15px}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.tabs2 button{background:var(--card);border:1px solid var(--bd);color:var(--mu);font-weight:700}
+.tabs2 button.on{background:var(--ac);color:var(--ac2);border-color:var(--ac)}
+.tabs2 span{opacity:.8;font-weight:600;margin-left:4px}
+.casos{display:flex;gap:6px;flex-wrap:wrap}
+.casos:not(:empty){margin-bottom:8px}
+.cc{background:var(--soft);color:var(--ac);border-radius:999px;padding:5px 4px 5px 12px;font-size:13px;font-weight:700;display:flex;align-items:center}
+.cc button{background:none;padding:0 8px;color:var(--ac);font-size:14px}
+.add{display:grid;grid-template-columns:1fr auto;gap:8px}
+.chip.on{background:var(--ac);color:var(--ac2)}
+dialog{border:0;border-radius:20px;padding:20px;width:min(420px,92%);background:var(--card);color:var(--tx);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,35,.5)}
+</style>
+</head>
+<body>
+<main>
+
+<section id="auth" class="authwrap" hidden>
+  <div class="authcard">
+    <div class="logo">🧾</div>
+    <h1>Rutero de viáticos</h1>
+    <p class="meta">Registra tus viajes en el momento y legaliza tus viáticos sin enredos.</p>
+    <div class="tabs"><button type="button" id="tabLogin" class="on">Entrar</button><button type="button" id="tabSignup">Crear cuenta</button></div>
+    <form id="loginForm">
+      <label for="email">CORREO</label>
+      <input id="email" type="email" required autocomplete="email" placeholder="tu@correo.com">
+      <label for="pass">CONTRASEÑA</label>
+      <div class="pw"><input id="pass" type="password" required minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres"><button type="button" id="eye" aria-label="Mostrar contraseña">👁</button></div>
+      <button class="pri" id="authBtn" type="submit">Entrar</button>
+      <button class="link" id="forgot" type="button">¿Olvidaste tu contraseña?</button>
+    </form>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <section id="home">
+    <div class="hero">
+      <div class="bar"><div class="me"><span class="av" id="av"></span><div><h1>Mis anticipos</h1><p id="who"></p></div></div><button class="ghost" id="logout" type="button">Salir</button></div>
+      <div class="stats"><div class="stat"><small>💰 Entregado</small><b id="hTot">$0</b></div><div class="stat"><small>🧮 Saldo</small><b id="hSal">$0</b></div></div>
+    </div>
+    <div class="bar sect"><h2>Mis IDs</h2><button class="sec" id="newA" type="button">＋ Nuevo ID</button></div>
+    <div id="aList"></div>
+  </section>
+
+  <section id="detail" hidden>
+    <div class="hero">
+      <div class="bar"><button class="ghost" id="back" type="button">← Volver</button><div class="btns"><button class="ghost" id="editA" type="button">✎ Editar</button><button class="ghost" id="delA" type="button">🗑</button></div></div>
+      <h1 id="dCode" class="big"></h1><p id="dSub"></p>
+      <div class="stats3">
+        <div class="stat"><small>Entregado</small><b id="dVal"></b></div>
+        <div class="stat"><small>Gastado</small><b id="dGas"></b></div>
+        <div class="stat"><small>Saldo</small><b id="dSal"></b></div>
+      </div>
+      <div class="prog w"><i id="dBar"></i></div>
+      <p id="dBrk"></p>
+    </div>
+
+    <div class="tabs2" id="tabs">
+      <button id="tV" class="on" data-tab="viajes" type="button">🚌 Viajes <span id="nV"></span></button>
+      <button id="tC" data-tab="comida" type="button">🍽 Comida <span id="nC"></span></button>
+    </div>
+
+    <div id="pV">
+      <section class="card">
+        <div class="bar"><h2 id="vTitle">Nuevo viaje</h2><button class="sec" id="rep" type="button">↺ Repetir el último</button></div>
+        <form id="vForm">
+          <div class="row">
+            <div><label for="fecha">FECHA</label><input id="fecha" type="date" required></div>
+            <div><label for="valor">VALOR (COP)</label><input id="valor" inputmode="numeric" placeholder="25.000" required></div>
+          </div>
+          <div class="row">
+            <div><label for="origen">ORIGEN</label><input id="origen" list="lugares" placeholder="Apartadó" required></div>
+            <div><label for="destino">DESTINO</label><input id="destino" list="lugares" placeholder="Carepa" required></div>
+          </div>
+          <label for="sv">CÓDIGO SV</label>
+          <input id="sv" list="svs" autocapitalize="characters" required>
+          <label for="caso">NÚMEROS DE CASO</label>
+          <div class="casos" id="casoChips"></div>
+          <div class="add"><input id="caso" placeholder="Escribe un caso y pulsa Añadir"><button class="sec" id="casoAdd" type="button">＋ Añadir</button></div>
+          <label for="act">ACTIVIDAD REALIZADA</label>
+          <input id="act" list="acts" placeholder="Ej.: Mantenimiento preventivo" required>
+          <div class="chips" id="chips"></div>
+          <label for="obs">OBSERVACIONES (OPCIONAL)</label>
+          <textarea id="obs"></textarea>
+          <datalist id="lugares"></datalist><datalist id="svs"></datalist><datalist id="acts"></datalist>
+          <button class="pri" id="vSave" type="submit">Guardar viaje</button>
+          <button class="sec wide" id="vCancel" type="button" hidden>Cancelar edición</button>
+        </form>
+      </section>
+      <section class="card">
+        <div class="bar"><h2>Viajes de este ID</h2><div class="btns"><button class="sec cp" type="button">📋 Copiar</button><button class="sec xl" type="button">⬇ Excel</button></div></div>
+        <div id="vList"></div>
+      </section>
+    </div>
+
+    <div id="pC" hidden>
+      <section class="card">
+        <h2 id="cTitle">Nueva comida</h2>
+        <form id="cForm">
+          <div class="row">
+            <div><label for="cFecha">FECHA</label><input id="cFecha" type="date" required></div>
+            <div><label for="cValor">VALOR (COP)</label><input id="cValor" inputmode="numeric" placeholder="15.000" required></div>
+          </div>
+          <label>TIPO</label>
+          <div class="chips" id="tipos">
+            <button type="button" class="chip" data-t="Desayuno">🥐 Desayuno</button>
+            <button type="button" class="chip" data-t="Almuerzo">🍛 Almuerzo</button>
+            <button type="button" class="chip" data-t="Cena">🌙 Cena</button>
+            <button type="button" class="chip" data-t="Otro">☕ Otro</button>
+          </div>
+          <label for="cLugar">LUGAR (OPCIONAL)</label>
+          <input id="cLugar" list="lugares" placeholder="Restaurante o sitio">
+          <label for="cObs">OBSERVACIONES (OPCIONAL)</label>
+          <textarea id="cObs"></textarea>
+          <button class="pri" id="cSave" type="submit">Guardar comida</button>
+          <button class="sec wide" id="cCancel" type="button" hidden>Cancelar edición</button>
+        </form>
+      </section>
+      <section class="card">
+        <div class="bar"><h2>Comidas de este ID</h2><div class="btns"><button class="sec cp" type="button">📋 Copiar</button><button class="sec xl" type="button">⬇ Excel</button></div></div>
+        <div id="cList"></div>
+      </section>
+    </div>
+  </section>
+
+  <dialog id="dlg">
+    <form id="aForm">
+      <h2 id="aTitle">Nuevo ID</h2>
+      <label for="aCod">ID DEL ANTICIPO</label>
+      <input id="aCod" required placeholder="Ej.: 20458">
+      <div class="row">
+        <div><label for="aFecha">FECHA</label><input id="aFecha" type="date" required></div>
+        <div><label for="aVal">VALOR ENTREGADO (COP)</label><input id="aVal" inputmode="numeric" placeholder="500.000" required></div>
+      </div>
+      <label for="aDes">NOTA (OPCIONAL)</label>
+      <input id="aDes" placeholder="Ej.: Visitas a Urabá">
+      <button class="pri" type="submit">Guardar</button>
+      <button class="sec wide" id="aCancel" type="button">Cancelar</button>
+    </form>
+  </dialog>
+</div>
+
+</main>
+<div id="toast"></div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
+import * as XLSX from "https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs";
+// ====== CONFIGURA AQUÍ (Supabase > Project Settings > API) ======
+const SUPABASE_URL = "https://vzryhegjlrtasxclhzbm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_39EYlMPa0xm0yanYirOE_A_yno817C7"; // pública por diseño; nunca uses la service_role key
+// ==================================================================
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const $ = (id) => document.getElementById(id);
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DIAS = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+let A = [], V = [], C = [], userId = null, view = "home", cur = null, tab = "viajes";
+let editA = null, editV = null, editC = null, casos = [], tipo = "";
+
+const cop = (n) => (n < 0 ? "-" : "") + "$" + Math.abs(Number(n || 0)).toLocaleString("es-CO");
+const pad = (n) => String(n).padStart(2, "0");
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const digits = (s) => parseInt(String(s).replace(/\D/g, ""), 10) || 0;
+const money = (el) => { const d = el.value.replace(/\D/g, ""); el.value = d ? Number(d).toLocaleString("es-CO") : ""; };
+function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 2400); }
+function dayLabel(f) { const [y, m, d] = f.split("-").map(Number); return `${DIAS[new Date(y, m - 1, d).getDay()]} ${d} de ${MESES[m - 1]}`; }
+const byDate = (a, b) => b.fecha.localeCompare(a.fecha) || b.created_at.localeCompare(a.created_at);
+const asc = (a, b) => a.fecha.localeCompare(b.fecha) || a.created_at.localeCompare(b.created_at);
+const sum = (r) => r.reduce((s, x) => s + x.valor_cop, 0);
+const vOf = (id) => V.filter((r) => r.anticipo_id === id);
+const cOf = (id) => C.filter((r) => r.anticipo_id === id);
+function stats(a) { const v = sum(vOf(a.id)), c = sum(cOf(a.id)); return { v, c, g: v + c, s: a.valor_cop - v - c }; }
+
+/* ---------- Sesión ---------- */
+sb.auth.onAuthStateChange((ev, session) => {
+  if (ev === "PASSWORD_RECOVERY") setTimeout(newPass, 300);
+  const uid = session?.user?.id ?? null;
+  $("auth").hidden = !!session;
+  $("app").hidden = !session;
+  if (uid === userId) return;
+  userId = uid;
+  if (uid) { $("who").textContent = session.user.email; $("av").textContent = (session.user.email || "?")[0].toUpperCase(); go("home"); load(); }
+  else { A = []; V = []; C = []; go("home"); }
+});
+let mode = "login";
+function setMode(m) {
+  mode = m;
+  $("tabLogin").classList.toggle("on", m === "login"); $("tabSignup").classList.toggle("on", m === "signup");
+  $("authBtn").textContent = m === "login" ? "Entrar" : "Crear cuenta";
+  $("pass").autocomplete = m === "login" ? "current-password" : "new-password";
+  $("forgot").hidden = m !== "login";
+}
+$("tabLogin").onclick = () => setMode("login");
+$("tabSignup").onclick = () => setMode("signup");
+$("eye").onclick = () => { const p = $("pass"), s = p.type === "password"; p.type = s ? "text" : "password"; $("eye").textContent = s ? "🙈" : "👁"; };
+$("loginForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const b = $("authBtn"), email = $("email").value.trim(), password = $("pass").value;
+  b.disabled = true; b.classList.add("load");
+  try {
+    if (mode === "login") {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) toast("No se pudo entrar: " + error.message);
+    } else {
+      const { data, error } = await sb.auth.signUp({ email, password });
+      if (error) toast("No se pudo crear la cuenta: " + error.message);
+      else if (!data.session) toast("Revisa tu correo para confirmar la cuenta");
+    }
+  } finally { b.disabled = false; b.classList.remove("load"); }
+};
+$("forgot").onclick = async () => {
+  const email = $("email").value.trim();
+  if (!email) return toast("Escribe tu correo primero");
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.href.split("#")[0] });
+  toast(error ? "No se pudo enviar: " + error.message : "Te enviamos un enlace para cambiar la contraseña");
+};
+async function newPass() {
+  const p = prompt("Escribe tu nueva contraseña (mínimo 6 caracteres)");
+  if (!p) return;
+  const { error } = await sb.auth.updateUser({ password: p });
+  toast(error ? "No se pudo cambiar: " + error.message : "Contraseña actualizada ✓");
+}
+$("logout").onclick = () => sb.auth.signOut();
+
+/* ---------- Datos ---------- */
+async function load() {
+  const [a, v, c] = await Promise.all([sb.from("anticipos").select("*"), sb.from("viajes").select("*"), sb.from("comidas").select("*")]);
+  const err = a.error || v.error || c.error;
+  if (err) return toast("Error al cargar: " + err.message);
+  A = a.data; V = v.data; C = c.data;
+  render();
+}
+async function save(t, id, r, after) {
+  const { error } = id ? await sb.from(t).update(r).eq("id", id) : await sb.from(t).insert(r);
+  if (error) return toast("Error al guardar: " + error.message);
+  await load(); after(); toast(id ? "Actualizado ✓" : "Guardado ✓");
+}
+async function del(t, id) {
+  if (!confirm("¿Eliminar este registro?")) return;
+  const { error } = await sb.from(t).delete().eq("id", id);
+  if (error) return toast("Error al eliminar: " + error.message);
+  await load(); toast("Eliminado");
+}
+
+/* ---------- Navegación ---------- */
+function go(v, id) {
+  view = v; cur = id ?? null;
+  $("home").hidden = v !== "home"; $("detail").hidden = v !== "detail";
+  if (v === "detail") { tab = "viajes"; resetV(); resetC(); }
+  render(); window.scrollTo(0, 0);
+}
+const back = () => (history.state?.v === "d" ? history.back() : go("home"));
+window.onpopstate = () => { if (view === "detail") go("home"); };
+$("back").onclick = back;
+$("aList").onclick = (e) => { const c = e.target.closest("[data-open]"); if (c) { history.pushState({ v: "d" }, ""); go("detail", c.dataset.open); } };
+$("tabs").onclick = (e) => { const b = e.target.closest("[data-tab]"); if (b) { tab = b.dataset.tab; renderDetail(); } };
+
+/* ---------- Pintado ---------- */
+function render() { view === "home" ? renderHome() : renderDetail(); hints(); }
+function group(rs, f) { let h = "", c = ""; for (const r of rs) { if (r.fecha !== c) { c = r.fecha; h += `<div class="day">${dayLabel(r.fecha)}</div>`; } h += f(r); } return h; }
+const empty = (i, t) => `<div class="empty">${i}<br>${t}</div>`;
+
+function renderHome() {
+  let ent = 0, gas = 0;
+  $("aList").innerHTML = [...A].sort(byDate).map((a) => {
+    const s = stats(a), p = a.valor_cop ? Math.min(100, (s.g / a.valor_cop) * 100) : 0;
+    ent += a.valor_cop; gas += s.g;
+    return `<article class="aid" data-open="${a.id}"><div class="r"><b class="code">ID ${esc(a.codigo)}</b><span class="v">${cop(a.valor_cop)}</span></div>
+      <div class="meta">${dayLabel(a.fecha)} · ${vOf(a.id).length} viajes · ${cOf(a.id).length} comidas${a.descripcion ? " · " + esc(a.descripcion) : ""}</div>
+      <div class="prog${s.s < 0 ? " over" : ""}"><i style="width:${p}%"></i></div>
+      <div class="meta">Gastado ${cop(s.g)} · <b class="${s.s < 0 ? "neg" : "pos"}">Saldo ${cop(s.s)}</b></div></article>`;
+  }).join("") || empty("💼", "Crea tu primer ID de anticipo");
+  $("hTot").textContent = cop(ent); $("hSal").textContent = cop(ent - gas);
+}
+function renderDetail() {
+  const a = A.find((x) => x.id === cur);
+  if (!a) { if (A.length || !userId) go("home"); return; }
+  const s = stats(a), p = a.valor_cop ? Math.min(100, (s.g / a.valor_cop) * 100) : 0;
+  $("dCode").textContent = "ID " + a.codigo;
+  $("dSub").textContent = dayLabel(a.fecha) + (a.descripcion ? " · " + a.descripcion : "");
+  $("dVal").textContent = cop(a.valor_cop); $("dGas").textContent = cop(s.g);
+  $("dSal").textContent = cop(s.s); $("dSal").className = s.s < 0 ? "neg" : "";
+  $("dBar").style.width = p + "%"; $("dBar").parentElement.classList.toggle("over", s.s < 0);
+  $("dBrk").textContent = `Viajes ${cop(s.v)} · Comida ${cop(s.c)}`;
+  const vs = vOf(a.id).sort(byDate), cs = cOf(a.id).sort(byDate);
+  $("nV").textContent = vs.length; $("nC").textContent = cs.length;
+  $("pV").hidden = tab !== "viajes"; $("pC").hidden = tab !== "comida";
+  $("tV").classList.toggle("on", tab === "viajes"); $("tC").classList.toggle("on", tab === "comida");
+  $("vList").innerHTML = group(vs, (r) => `<div class="item"><div class="r"><span>${esc(r.origen)} → ${esc(r.destino)}</span><span class="v">${cop(r.valor_cop)}</span></div>
+    <div class="meta"><span class="tag">SV ${esc(r.codigo_sv)}</span>${(r.numeros_caso || []).map((n) => `<span class="tag">Caso ${esc(n)}</span>`).join("")}</div>
+    <div class="meta">${esc(r.actividad)}</div>${r.observaciones ? `<div class="meta">“${esc(r.observaciones)}”</div>` : ""}
+    <div class="acts"><button data-ev="${r.id}" type="button">Editar</button><button class="del" data-dv="${r.id}" type="button">Eliminar</button></div></div>`) || empty("🚌", "Aún no hay viajes en este ID");
+  $("cList").innerHTML = group(cs, (r) => `<div class="item"><div class="r"><span>🍽 ${esc(r.tipo)}${r.lugar ? " · " + esc(r.lugar) : ""}</span><span class="v">${cop(r.valor_cop)}</span></div>
+    ${r.observaciones ? `<div class="meta">“${esc(r.observaciones)}”</div>` : ""}
+    <div class="acts"><button data-ec="${r.id}" type="button">Editar</button><button class="del" data-dc="${r.id}" type="button">Eliminar</button></div></div>`) || empty("🍽", "Aún no hay comidas en este ID");
+}
+function hints() {
+  const u = (a, k) => [...new Set(a.map((r) => r[k]).filter(Boolean))];
+  const o = (a) => a.map((v) => `<option value="${esc(v)}">`).join("");
+  $("lugares").innerHTML = o([...new Set([...u(V, "origen"), ...u(V, "destino"), ...u(C, "lugar")])]);
+  $("svs").innerHTML = o(u(V, "codigo_sv")); $("acts").innerHTML = o(u(V, "actividad"));
+  const c = {}; V.forEach((r) => (c[r.actividad] = (c[r.actividad] || 0) + 1));
+  $("chips").innerHTML = Object.keys(c).sort((a, b) => c[b] - c[a]).slice(0, 4).map((a) => `<button type="button" class="chip" data-a="${esc(a)}">${esc(a)}</button>`).join("");
+}
+
+/* ---------- Anticipos (ID) ---------- */
+function openA(a) {
+  editA = a?.id ?? null;
+  $("aTitle").textContent = a ? "Editar ID" : "Nuevo ID";
+  $("aCod").value = a?.codigo ?? ""; $("aFecha").value = a?.fecha ?? today();
+  $("aVal").value = a ? Number(a.valor_cop).toLocaleString("es-CO") : ""; $("aDes").value = a?.descripcion ?? "";
+  $("dlg").showModal();
+}
+$("newA").onclick = () => openA();
+$("editA").onclick = () => openA(A.find((x) => x.id === cur));
+$("aCancel").onclick = () => $("dlg").close();
+$("aVal").oninput = (e) => money(e.target);
+$("aForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const r = { codigo: $("aCod").value.trim(), fecha: $("aFecha").value, valor_cop: digits($("aVal").value), descripcion: $("aDes").value.trim() || null };
+  const id = editA;
+  const { error } = id ? await sb.from("anticipos").update(r).eq("id", id) : await sb.from("anticipos").insert(r);
+  if (error) return toast(error.code === "23505" ? "Ya tienes un ID con ese código" : "Error al guardar: " + error.message);
+  $("dlg").close(); await load(); toast(id ? "ID actualizado ✓" : "ID creado ✓");
+};
+$("delA").onclick = async () => {
+  const a = A.find((x) => x.id === cur);
+  if (!a || !confirm(`¿Eliminar el ID ${a.codigo} con todos sus viajes y comidas?`)) return;
+  const { error } = await sb.from("anticipos").delete().eq("id", a.id);
+  if (error) return toast("Error al eliminar: " + error.message);
+  back(); await load(); toast("ID eliminado");
+};
+
+/* ---------- Viajes ---------- */
+const lastV = () => [...V].sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+function renderCasos() { $("casoChips").innerHTML = casos.map((n, i) => `<span class="cc">${esc(n)}<button type="button" data-rm="${i}" aria-label="Quitar">✕</button></span>`).join(""); }
+function addCasos() { $("caso").value.split(/[\s,;]+/).filter(Boolean).forEach((n) => !casos.includes(n) && casos.push(n)); $("caso").value = ""; renderCasos(); }
+function setV() { $("vTitle").textContent = editV ? "Editar viaje" : "Nuevo viaje"; $("vSave").textContent = editV ? "Actualizar viaje" : "Guardar viaje"; $("vCancel").hidden = !editV; }
+function resetV() {
+  editV = null; casos = []; renderCasos(); $("vForm").reset(); $("fecha").value = today();
+  const l = lastV(); if (l) $("origen").value = l.origen; setV();
+}
+function fillV(r) {
+  $("fecha").value = r.fecha; $("origen").value = r.origen; $("destino").value = r.destino; $("sv").value = r.codigo_sv;
+  casos = [...(r.numeros_caso || [])]; renderCasos(); $("act").value = r.actividad; $("obs").value = r.observaciones ?? "";
+  $("valor").value = Number(r.valor_cop).toLocaleString("es-CO");
+}
+$("valor").oninput = (e) => money(e.target);
+$("caso").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); addCasos(); } };
+$("caso").oninput = (e) => { if (/[,;\s]$/.test(e.target.value)) addCasos(); };
+$("casoAdd").onclick = () => { addCasos(); $("caso").focus(); };
+$("casoChips").onclick = (e) => { const i = e.target.dataset.rm; if (i !== undefined) { casos.splice(+i, 1); renderCasos(); } };
+$("chips").onclick = (e) => { if (e.target.dataset.a) $("act").value = e.target.dataset.a; };
+$("rep").onclick = () => {
+  const l = lastV(); if (!l) return toast("Aún no tienes viajes");
+  fillV({ ...l, fecha: today(), numeros_caso: [], observaciones: null }); $("caso").focus(); toast("Datos del último viaje cargados");
+};
+$("vCancel").onclick = resetV;
+$("vForm").onsubmit = (e) => {
+  e.preventDefault(); addCasos();
+  if (!casos.length) return toast("Agrega al menos un número de caso");
+  save("viajes", editV, {
+    anticipo_id: cur, fecha: $("fecha").value, origen: $("origen").value.trim(), destino: $("destino").value.trim(),
+    codigo_sv: $("sv").value.trim().toUpperCase(), numeros_caso: [...casos], actividad: $("act").value.trim(),
+    observaciones: $("obs").value.trim() || null, valor_cop: digits($("valor").value),
+  }, resetV);
+};
+$("vList").onclick = (e) => {
+  const { ev, dv } = e.target.dataset;
+  if (ev) { editV = ev; fillV(V.find((x) => x.id === ev)); setV(); $("vForm").scrollIntoView({ behavior: "smooth" }); }
+  if (dv) del("viajes", dv);
+};
+
+/* ---------- Comida ---------- */
+function markTipo() { document.querySelectorAll("#tipos .chip").forEach((b) => b.classList.toggle("on", b.dataset.t === tipo)); }
+function setC() { $("cTitle").textContent = editC ? "Editar comida" : "Nueva comida"; $("cSave").textContent = editC ? "Actualizar comida" : "Guardar comida"; $("cCancel").hidden = !editC; }
+function resetC() { editC = null; tipo = ""; markTipo(); $("cForm").reset(); $("cFecha").value = today(); setC(); }
+$("cValor").oninput = (e) => money(e.target);
+$("tipos").onclick = (e) => { if (e.target.dataset.t) { tipo = e.target.dataset.t; markTipo(); } };
+$("cCancel").onclick = resetC;
+$("cForm").onsubmit = (e) => {
+  e.preventDefault();
+  if (!tipo) return toast("Elige el tipo de comida");
+  save("comidas", editC, {
+    anticipo_id: cur, fecha: $("cFecha").value, tipo, lugar: $("cLugar").value.trim() || null,
+    observaciones: $("cObs").value.trim() || null, valor_cop: digits($("cValor").value),
+  }, resetC);
+};
+$("cList").onclick = (e) => {
+  const { ec, dc } = e.target.dataset;
+  if (ec) {
+    const r = C.find((x) => x.id === ec); editC = ec; tipo = r.tipo; markTipo();
+    $("cFecha").value = r.fecha; $("cValor").value = Number(r.valor_cop).toLocaleString("es-CO");
+    $("cLugar").value = r.lugar ?? ""; $("cObs").value = r.observaciones ?? ""; setC();
+    $("cForm").scrollIntoView({ behavior: "smooth" });
+  }
+  if (dc) del("comidas", dc);
+};
+
+/* ---------- Exportar ---------- */
+const clean = (s) => String(s ?? "").replace(/\s+/g, " ");
+const rowV = (r) => [r.fecha, r.origen, r.destino, r.codigo_sv, (r.numeros_caso || []).join(", "), r.actividad, r.observaciones ?? "", r.valor_cop];
+const rowC = (r) => [r.fecha, r.tipo, r.lugar ?? "", r.observaciones ?? "", r.valor_cop];
+document.querySelectorAll(".cp").forEach((b) => (b.onclick = async () => {
+  const isV = tab === "viajes", rs = (isV ? vOf(cur) : cOf(cur)).sort(asc);
+  if (!rs.length) return toast("No hay registros para copiar");
+  const t = rs.map((r) => (isV ? rowV(r) : rowC(r)).map(clean).join("\t")).join("\n");
+  try { await navigator.clipboard.writeText(t); toast("Copiado: pégalo en tu Excel ✓"); } catch { toast("No se pudo copiar"); }
+}));
+document.querySelectorAll(".xl").forEach((b) => (b.onclick = () => {
+  const a = A.find((x) => x.id === cur); if (!a) return;
+  const vs = vOf(cur).sort(asc), cs = cOf(cur).sort(asc), s = stats(a);
+  const sheet = (h, rows, tot, w) => { const ws = XLSX.utils.aoa_to_sheet([h, ...rows, tot]); ws["!cols"] = w.map((wch) => ({ wch })); return ws; };
+  const wb = XLSX.utils.book_new();
+  const res = XLSX.utils.aoa_to_sheet([["ID de anticipo", a.codigo], ["Fecha", a.fecha], ["Valor entregado", a.valor_cop], ["Total viajes", s.v], ["Total comida", s.c], ["Total gastado", s.g], ["Saldo", s.s]]);
+  res["!cols"] = [{ wch: 18 }, { wch: 16 }];
+  XLSX.utils.book_append_sheet(wb, res, "Resumen");
+  XLSX.utils.book_append_sheet(wb, sheet(["Fecha", "Lugar de origen", "Lugar de destino", "Código SV", "Números de caso", "Actividad realizada", "Observaciones", "Valor (COP)"], vs.map(rowV), ["", "", "", "", "", "", "TOTAL", s.v], [12, 18, 18, 12, 22, 32, 30, 14]), "Viajes");
+  XLSX.utils.book_append_sheet(wb, sheet(["Fecha", "Tipo", "Lugar", "Observaciones", "Valor (COP)"], cs.map(rowC), ["", "", "", "TOTAL", s.c], [12, 14, 24, 30, 14]), "Comida");
+  XLSX.writeFile(wb, `anticipo-${a.codigo.replace(/[^\w-]+/g, "_")}.xlsx`);
+}));
+</script>
+</body>
+</html>
